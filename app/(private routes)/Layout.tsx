@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import AuthProvider from '@/components/AuthProvider/AuthProvider';
+import { AuthProvider } from '@/components/AuthProvider/AuthProvider';
 
 interface PrivateLayoutProps {
     children: ReactNode;

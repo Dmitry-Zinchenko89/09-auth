@@ -1,85 +1,116 @@
+import axios from 'axios';
 import { axiosInstance } from './api';
-import type { User } from '@/types/user';
 import type { Note, NewNote } from '@/types/note';
-import type { ResponseGetData } from '@/types/ResponseGetData';
+import type { User } from '@/types/user';
+import { ResponseGetData } from '@/types/ResponseGetData';
 
-// ---------- AUTH ----------
-export const registerUser = async (
-    email: string,
-    password: string,
-    data: Partial<User>
-): Promise<User> => {
-    const res = await axiosInstance.post('/auth/register', {
-        email,
-        password,
-        ...data,
-    });
-    return res.data;
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
+
+const notehubToken = process.env.NEXT_PUBLIC_TOKEN;
+
+const headers = {
+    Accept: 'application/json',
+    Authorization: `Bearer ${notehubToken}`,
 };
 
-export const loginUser = async (
-    email: string,
-    password: string
-): Promise<User> => {
-    const res = await axiosInstance.post('/auth/login', {
-        email,
-        password,
-    });
-    return res.data;
-};
 
-export const getSession = async (): Promise<User | null> => {
-    try {
-        const res = await axiosInstance.get('/auth/session');
-        return res.data;
-    } catch {
-        return null;
-    }
-};
 
-export const updateProfile = async (data: Partial<User>): Promise<User> => {
-    const res = await axiosInstance.patch('/users/me', data);
-    return res.data;
-};
-
-// ---------- NOTES ----------
 interface FetchNotesParams {
     search?: string;
     page?: number;
     tag?: string;
 }
 
-export const fetchNotes = async ({
+export const checkSession = async (): Promise<User | null> => {
+    try {
+        const res = await axiosInstance.get<User>('/auth/session');
+        return res.data;
+    } catch {
+        return null;
+    }
+};
+
+export async function fetchNotes({
     search = '',
     page = 1,
     tag,
-}: FetchNotesParams): Promise<ResponseGetData> => {
+}: FetchNotesParams): Promise<ResponseGetData> {
     const params: Record<string, string | number> = {
         page,
-        perPage: 12,
+        perPage: 16,
     };
 
     if (search) params.search = search;
     if (tag && tag !== 'All') params.tag = tag;
 
-    const { data } = await axiosInstance.get<ResponseGetData>('/notes', {
+    const { data } = await axios.get<ResponseGetData>('/notes', {
         params,
+        headers,
     });
 
     return data;
-};
+}
 
-export const createNote = async (newNote: NewNote): Promise<Note> => {
-    const { data } = await axiosInstance.post<Note>('/notes', newNote);
+export async function createNote(newNote: NewNote): Promise<Note> {
+    const { data } = await axios.post<Note>('/notes', newNote, { headers });
     return data;
-};
+}
 
-export const deleteNote = async (noteId: number): Promise<Note> => {
-    const { data } = await axiosInstance.delete<Note>(`/notes/${noteId}`);
+export async function deleteNote(noteId: string): Promise<Note> {
+    const { data } = await axios.delete<Note>(`/notes/${noteId}`, { headers });
     return data;
-};
+}
 
-export const fetchNoteById = async (noteId: number): Promise<Note> => {
-    const { data } = await axiosInstance.get<Note>(`/notes/${noteId}`);
+export async function fetchNoteById(noteId: string): Promise<Note> {
+    const { data } = await axios.get<Note>(`/notes/${noteId}`, { headers });
     return data;
-};
+}
+
+
+
+export async function registerUser(
+    email: string,
+    password: string,
+    data: Partial<User>
+): Promise<User> {
+    const res = await axios.post('/auth/register', {
+        email,
+        password,
+        ...data,
+    }, { headers });
+    return res.data;
+}
+
+export async function loginUser(
+    email: string,
+    password: string
+): Promise<User> {
+    const res = await axios.post('/auth/login', {
+        email,
+        password,
+    }, { headers });
+    return res.data;
+}
+
+export async function logout(): Promise<void> {
+    await axios.post('/auth/logout', null, { headers });
+}
+
+export async function getSession(): Promise<User | null> {
+    try {
+        const res = await axios.get('/auth/session', { headers });
+        return res.data;
+    } catch {
+        return null;
+    }
+}
+
+export async function getCurrentUser(): Promise<User> {
+    const res = await axios.get('/users/me', { headers });
+    return res.data;
+}
+
+export async function updateProfile(data: Partial<User>): Promise<User> {
+    const res = await axios.patch('/users/me', data, { headers });
+    return res.data;
+}

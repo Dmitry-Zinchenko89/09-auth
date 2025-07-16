@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/lib/store/authStore';
 import { registerUser } from '@/lib/api/clientApi';
+import { useAuthStore } from '@/lib/store/authStore';
+
 import css from './SignUpPage.module.css';
 
 export default function SignUpPage() {
@@ -12,56 +13,49 @@ export default function SignUpPage() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
     const [error, setError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError('');
 
         try {
-            const user = await registerUser(email, password, { username });
+            const user = await registerUser(email, password, {});
             setUser(user);
             router.push('/profile');
         } catch {
-            setError('Failed to register. Try again.');
+            setError('Не вдалося зареєструватися. Спробуйте ще раз.');
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className={css.form}>
-            <h2 className={css.title}>Sign Up</h2>
-
-            {error && <p className={css.error}>{error}</p>}
+            <h1 className={css.title}>Реєстрація</h1>
 
             <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
                 className={css.input}
-                required
-            />
-
-            <input
                 type="email"
+                name="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={css.input}
                 required
             />
 
             <input
+                className={css.input}
                 type="password"
-                placeholder="Password"
+                name="password"
+                placeholder="Пароль"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={css.input}
                 required
             />
 
+            {error && <p className={css.error}>{error}</p>}
+
             <button type="submit" className={css.button}>
-                Register
+                Зареєструватися
             </button>
         </form>
     );

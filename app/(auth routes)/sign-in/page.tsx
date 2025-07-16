@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginUser } from '@/lib/api/clientApi';
 import { useAuthStore } from '@/lib/store/authStore';
+
 import css from './SignInPage.module.css';
 
 export default function SignInPage() {
@@ -16,42 +17,45 @@ export default function SignInPage() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError('');
 
         try {
             const user = await loginUser(email, password);
             setUser(user);
             router.push('/profile');
         } catch {
-            setError('Failed to sign in. Try again.');
+            setError('Не вдалося увійти. Перевірте дані та спробуйте ще раз.');
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className={css.form}>
-            <h2 className={css.title}>Sign In</h2>
-
-            {error && <p className={css.error}>{error}</p>}
+            <h1 className={css.title}>Вхід</h1>
 
             <input
+                className={css.input}
                 type="email"
+                name="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={css.input}
                 required
             />
 
             <input
+                className={css.input}
                 type="password"
-                placeholder="Password"
+                name="password"
+                placeholder="Пароль"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={css.input}
                 required
             />
 
+            {error && <p className={css.error}>{error}</p>}
+
             <button type="submit" className={css.button}>
-                Sign In
+                Увійти
             </button>
         </form>
     );

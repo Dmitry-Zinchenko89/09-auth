@@ -16,19 +16,19 @@ export default function NoteList({ items }: NoteListProps) {
     const queryClient = useQueryClient();
 
     const deleteMutation = useMutation({
-        mutationFn: (id: number) => deleteNote(id),
+        mutationFn: (id: string) => deleteNote(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notes'] });
         },
     });
 
-    const handleDelete = (id: number) => {
+    const handleDelete = (id: string) => {
         if (confirm('Are you sure you want to delete this note?')) {
             deleteMutation.mutate(id);
         }
     };
 
-    const goToDetails = (id: number) => {
+    const goToDetails = (id: string) => {
         router.push(`/notes/${id}`, { scroll: false });
     };
 
@@ -36,7 +36,7 @@ export default function NoteList({ items }: NoteListProps) {
         <ul className={css.list}>
             {items.map((note) => (
                 <li key={note.id} className={css.item}>
-                    <div onClick={() => goToDetails(note.id)} className={css.clickable}>
+                    <div onClick={() => goToDetails(String(note.id))} className={css.clickable}>
                         <h3>{note.title}</h3>
                         <p>#{note.tag}</p>
                         <p className={css.date}>
@@ -44,7 +44,7 @@ export default function NoteList({ items }: NoteListProps) {
                         </p>
                     </div>
                     <button
-                        onClick={() => handleDelete(note.id)}
+                        onClick={() => handleDelete(String(note.id))}
                         className={css.deleteBtn}
                         disabled={deleteMutation.isPending}
                     >
@@ -54,4 +54,4 @@ export default function NoteList({ items }: NoteListProps) {
             ))}
         </ul>
     );
-}
+} 

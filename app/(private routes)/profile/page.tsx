@@ -1,30 +1,30 @@
-'use client';
-
-import css from './ProfilePage.module.css';
 import Image from 'next/image';
-import { useAuthStore } from '@/lib/store/authStore';
+import Link from 'next/link';
+import { getProfile } from '@/lib/api/serverApi';
+import { Metadata } from 'next';
 
-export default function ProfilePage() {
-    const user = useAuthStore((state) => state.user);
+export const metadata: Metadata = {
+    title: 'Профіль користувача',
+    description: 'Особистий кабінет з інформацією про користувача',
+};
 
-    if (!user) return null;
+export default async function ProfilePage() {
+    const user = await getProfile();
 
     return (
-        <div className={css.profile}>
-            <h1>My Profile</h1>
+        <div style={{ padding: '2rem' }}>
+            <h1>Профіль</h1>
             <Image
-                src={user.avatarURL || '/avatar-placeholder.png'}
-                alt="User Avatar"
-                width={120}
-                height={120}
-                className={css.avatar}
+                src={user.avatarURL ?? '/img/default-avatar.png'}
+                alt={user.username}
+                width={100}
+                height={100}
+                style={{ borderRadius: '50%' }}
             />
-            <p>
-                <strong>Username:</strong> {user.username}
-            </p>
-            <p>
-                <strong>Email:</strong> {user.email}
-            </p>
+            <p>Ім’я: {user.username}</p>
+            <p>Email: {user.email}</p>
+
+            <Link href="/profile/edit">Редагувати профіль</Link>
         </div>
     );
 }

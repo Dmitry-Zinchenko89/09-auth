@@ -2,10 +2,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { fetchNoteById } from '@/lib/api/clientApi';
-import css from './NoteDetails.module.css';
 
 type Props = {
-    id: number;
+    id: string;
 };
 
 export default function NoteDetails({ id }: Props) {
@@ -18,10 +17,10 @@ export default function NoteDetails({ id }: Props) {
     if (isError || !data) return <p>Error loading note</p>;
 
     return (
-        <article className={css.note}>
-            <h2 className={css.title}>{data.title}</h2>
-            <p className={css.content}>{data.content}</p>
-            <p className={css.tag}>#{data.tag}</p>
+        <article>
+            <h2>{data.title}</h2>
+            <p>{data.content}</p>
+            <p>#{data.tag}</p>
         </article>
     );
 }

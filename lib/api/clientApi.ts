@@ -10,6 +10,18 @@ interface FetchNotesParams {
 }
 
 
+
+export const checkSession = async (): Promise<boolean> => {
+    try {
+        await axiosInstance.get('/auth/session');
+        return true;
+    } catch {
+        return false;
+    }
+};
+
+
+
 export async function getSession(): Promise<User | null> {
     try {
         const res = await axiosInstance.get<User>('/auth/session');

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/lib/store/authStore';
-import { checkSession } from '@/lib/api/serverApi';
+import { checkSession, getCurrentUser } from '@/lib/api/clientApi';
 
 interface Props {
     children: React.ReactNode;
@@ -15,10 +15,10 @@ export const AuthProvider = ({ children }: Props) => {
     useEffect(() => {
         const initAuth = async () => {
             try {
-                const res = await checkSession();
-                const user = res.data;
+                const session = await checkSession();
 
-                if (user) {
+                if (session) {
+                    const user = await getCurrentUser();
                     setUser(user);
                 } else {
                     clearUser();

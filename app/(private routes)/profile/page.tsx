@@ -7,6 +7,7 @@ export const metadata: Metadata = {
     title: 'Профіль користувача',
     description: 'Особистий кабінет з інформацією про користувача',
 };
+export const dynamic = 'force-dynamic';
 
 export default async function ProfilePage() {
     const user = await getProfile();

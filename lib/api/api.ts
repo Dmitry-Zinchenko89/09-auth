@@ -7,6 +7,6 @@ if (!baseURL) {
 }
 
 export const axiosInstance = axios.create({
-    baseURL: `${baseURL}/api`,
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
     withCredentials: true,
 });

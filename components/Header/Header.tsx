@@ -12,16 +12,12 @@ export default async function Header() {
             <nav aria-label="Main Navigation">
                 <ul className={css.navigation}>
                     <li>
-                        <Link href="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link href="/notes/create" className={css.createButton}>
-                            Create note +
-                        </Link>
-                    </li>
-                    <li>
                         <TagsMenu />
                     </li>
+                    <li>
+                        <Link href="/">Home</Link>
+                    </li>
+
                     <AuthNavigation />
                 </ul>
             </nav>

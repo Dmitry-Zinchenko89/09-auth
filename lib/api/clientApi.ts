@@ -42,7 +42,11 @@ export async function fetchNotes({
     };
 
     if (search) params.search = search;
-    if (tag && tag !== 'All') params.tag = tag;
+    if (typeof tag === 'string' && tag.trim() !== '' && tag !== 'All') {
+        params.tag = tag.trim();
+    }
+
+
 
     const { data } = await axiosInstance.get<ResponseGetData>('/notes', {
         params,

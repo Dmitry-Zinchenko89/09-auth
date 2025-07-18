@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { fetchNotes } from '@/lib/api/clientApi';
+import { getNotes } from '@/lib/api/serverApi'; // 💥 тут серверная версия
 import NotesClient from './Notes.client';
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
-    const tag = decodeURIComponent(slug.join('/'));
+    const tag = slug ? decodeURIComponent(slug.join('/')) : undefined;
 
     return {
         title: `Notes tagged with "${tag}" – NoteHub`,
@@ -32,11 +32,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
     const { slug } = await params;
 
-    const tag = decodeURIComponent(slug.join('/'));
+    const tag =
+        Array.isArray(slug) && slug.length > 0
+            ? decodeURIComponent(slug.join('/'))
+            : undefined;
+
     const page = 1;
     const search = '';
 
-    const data = await fetchNotes({ page, search, tag });
+    const data = await getNotes({ page, search, tag }); // ✅ теперь используется серверная функция
 
     return <NotesClient tag={tag} initialData={data} />;
 }

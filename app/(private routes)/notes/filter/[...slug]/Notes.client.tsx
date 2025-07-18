@@ -8,7 +8,6 @@ import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Link from 'next/link';
-
 import css from './NotesPage.module.css';
 
 type Props = {
@@ -34,8 +33,8 @@ export default function NotesClient({ tag, initialData }: Props) {
     };
 
     return (
-        <div className={css.app}>
-            <div className={css.toolbar}>
+        <div>
+            <div className={css.controls}>
                 <SearchBox value={search} onChange={handleSearch} />
                 {isSuccess && data.totalPages > 1 && (
                     <Pagination
@@ -45,8 +44,8 @@ export default function NotesClient({ tag, initialData }: Props) {
                     />
                 )}
 
-                <Link href="/notes/action/create" className={css.button}>
-                    Створити нотатку +
+                <Link href="/notes/action/create" className={css.createButton}>
+                    Create Note +
                 </Link>
             </div>
 

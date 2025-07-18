@@ -1,7 +1,7 @@
 'use client';
-
 import { useQuery } from '@tanstack/react-query';
 import { fetchNoteById } from '@/lib/api/clientApi';
+import css from './NoteDetails.module.css';
 
 type Props = {
     id: string;
@@ -18,9 +18,9 @@ export default function NoteDetails({ id }: Props) {
 
     return (
         <article>
-            <h2>{data.title}</h2>
-            <p>{data.content}</p>
-            <p>#{data.tag}</p>
+            <h2>{css.title}</h2>
+            <p>{css.content}</p>
+            <p>#{css.tag}</p>
         </article>
     );
 }
